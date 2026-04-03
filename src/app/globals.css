@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4efe6;
+  --foreground: #1d1a17;
+  --card: rgba(255, 251, 246, 0.88);
+  --card-border: rgba(79, 55, 36, 0.12);
+  --muted: #6d6257;
+  --accent: #c96838;
+  --accent-strong: #a74d22;
+  --accent-soft: rgba(201, 104, 56, 0.14);
+  --surface: #f9f5ef;
+  --shadow: 0 24px 80px rgba(54, 38, 24, 0.14);
+  --ring: rgba(201, 104, 56, 0.35);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-surface: var(--surface);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+.dark {
+  --background: #140f0b;
+  --foreground: #f6efe7;
+  --card: rgba(34, 26, 20, 0.86);
+  --card-border: rgba(233, 213, 191, 0.12);
+  --muted: #c1b2a3;
+  --accent: #ef8b57;
+  --accent-strong: #ffb38a;
+  --accent-soft: rgba(239, 139, 87, 0.16);
+  --surface: #1d1611;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+  --ring: rgba(255, 179, 138, 0.35);
+}
+
+* {
+  border-color: var(--card-border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(circle at top left, rgba(201, 104, 56, 0.16), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(100, 148, 122, 0.16), transparent 28%),
+    linear-gradient(180deg, var(--surface) 0%, var(--background) 100%);
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff7f3;
+}
+
+a,
+button,
+input,
+textarea,
+select {
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.glass-panel {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.page-shell {
+  width: min(1120px, calc(100vw - 1.5rem));
+  margin-inline: auto;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.chart-card {
+  min-height: 320px;
+}
+
+.swirl-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, transparent 0%, rgba(201, 104, 56, 0.08) 42%, transparent 100%),
+    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.2), transparent 24%);
+  opacity: 0.8;
+}
+
+@media (max-width: 640px) {
+  .page-shell {
+    width: min(1120px, calc(100vw - 1rem));
+  }
+}
