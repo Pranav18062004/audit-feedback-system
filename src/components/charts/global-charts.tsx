@@ -5,9 +5,6 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Cell,
-  Pie,
-  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -15,9 +12,20 @@ import {
 } from "recharts";
 import type { Question, StoreSummary } from "@/lib/supabase/types";
 import { formatCount, formatRating } from "@/lib/utils";
-
-const pieColors = ["#f5333f", "#b3b5b8", "#8e9094", "#d4d7db", "#232528"];
 type TooltipValue = number | string | ReadonlyArray<number | string> | undefined;
+const tooltipStyle = {
+  backgroundColor: "var(--card)",
+  border: "1px solid var(--card-border)",
+  borderRadius: "8px",
+  color: "var(--foreground)",
+};
+const tooltipLabelStyle = {
+  color: "var(--foreground)",
+  fontWeight: 600,
+};
+const tooltipItemStyle = {
+  color: "var(--foreground)",
+};
 
 function toNumericTooltipValue(value: TooltipValue) {
   if (Array.isArray(value)) {
@@ -40,11 +48,6 @@ export function GlobalCharts({ questions, summaries }: GlobalChartsProps) {
     name: store.storeName,
     overall: Number(store.overallAverage.toFixed(2)),
     feedbackCount: store.feedbackCount,
-  }));
-
-  const pieData = summaries.map((store) => ({
-    name: store.storeName,
-    value: store.feedbackCount,
   }));
 
   const selectedQuestion = questions.find((question) => question.id === selectedQuestionId) ?? questions[0] ?? null;
@@ -85,7 +88,7 @@ export function GlobalCharts({ questions, summaries }: GlobalChartsProps) {
 
   return (
     <div className="grid gap-5 xl:grid-cols-3">
-      <div className="chart-card p-5 xl:col-span-2">
+      <div className="chart-card p-5 xl:col-span-3">
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-foreground">Store comparison</h3>
           <p className="text-sm text-muted">Overall score by store for the selected date range.</p>
@@ -105,28 +108,14 @@ export function GlobalCharts({ questions, summaries }: GlobalChartsProps) {
               <Tooltip
                 formatter={(value) => formatRating(toNumericTooltipValue(value))}
                 labelFormatter={(value) => String(value)}
+                contentStyle={tooltipStyle}
+                labelStyle={tooltipLabelStyle}
+                itemStyle={tooltipItemStyle}
               />
               <Bar dataKey="overall" name="Overall score" fill="#f5333f" radius={[0, 8, 8, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </div>
-
-      <div className="chart-card p-5">
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-foreground">Feedback share</h3>
-          <p className="text-sm text-muted">Contribution to total feedback volume.</p>
-        </div>
-        <ResponsiveContainer width="100%" height={280}>
-          <PieChart>
-            <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={90} innerRadius={50} paddingAngle={3}>
-              {pieData.map((entry, index) => (
-                <Cell key={entry.name} fill={pieColors[index % pieColors.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
-        </ResponsiveContainer>
       </div>
 
       <div className="chart-card p-5 xl:col-span-3">
@@ -201,18 +190,21 @@ export function GlobalCharts({ questions, summaries }: GlobalChartsProps) {
                     <Tooltip
                       formatter={(value) => formatRating(toNumericTooltipValue(value))}
                       labelFormatter={(value) => String(value)}
+                      contentStyle={tooltipStyle}
+                      labelStyle={tooltipLabelStyle}
+                      itemStyle={tooltipItemStyle}
                     />
                     <Bar
                       dataKey="score"
                       name={selectedQuestion?.title ?? "Question"}
-                      fill="#8e9094"
+                      fill="#f5333f"
                       radius={[0, 8, 8, 0]}
                     />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
 
-              <div className="overflow-x-auto">
+              <div className="max-h-[560px] overflow-auto pr-2">
                 <table className="min-w-full text-left text-sm">
                   <thead className="text-muted">
                     <tr>
