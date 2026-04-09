@@ -11,7 +11,6 @@ const GlobalCharts = dynamic(
 type LazyGlobalChartsProps = {
   questions: Question[];
   summaries: StoreSummary[];
-  trends: Array<{ date: string; feedbackCount: number; overall: number; averages: Record<string, number> }>;
 };
 
 export function LazyGlobalCharts(props: LazyGlobalChartsProps) {

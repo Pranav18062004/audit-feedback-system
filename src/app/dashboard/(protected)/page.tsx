@@ -57,7 +57,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         />
         <StatCard
           label="Best store"
-          value={analytics.bestStore?.storeCode ?? "N/A"}
+          value={analytics.bestStore?.storeName ?? "N/A"}
           hint={
             analytics.bestStore
               ? `${formatRating(analytics.bestStore.overallAverage)} overall`
@@ -74,7 +74,6 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       <LazyGlobalCharts
         questions={analytics.questions}
         summaries={analytics.summaries}
-        trends={analytics.trends}
       />
 
       <FeedbackLogTable
@@ -112,7 +111,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
                   <td className="py-4 pr-4">
                     <div>
                       <p className="font-semibold text-foreground">{store.storeName}</p>
-                      <p className="text-muted">{store.storeCode}</p>
+                      {store.storeCode ? <p className="text-muted">{store.storeCode}</p> : null}
                     </div>
                   </td>
                   <td className="py-4 pr-4 text-foreground">
