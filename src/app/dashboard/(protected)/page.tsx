@@ -2,9 +2,10 @@ import Link from "next/link";
 import { LazyGlobalCharts } from "@/components/charts/lazy-global-charts";
 import { DateRangeFilter } from "@/components/date-range-filter";
 import { ExportButtons } from "@/components/export-buttons";
+import { FeedbackLogTable } from "@/components/feedback-log-table";
 import { StatCard } from "@/components/stat-card";
 import { defaultDatePreset } from "@/config/feedback";
-import { getGlobalAnalytics } from "@/lib/queries";
+import { getGlobalAnalytics, getRecentFeedbackRows } from "@/lib/queries";
 import { formatCount, formatRating, getDateRangeFromPreset } from "@/lib/utils";
 
 type DashboardPageProps = {
@@ -26,7 +27,10 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       ? params.endDate
       : derivedRange?.endDate ?? getDateRangeFromPreset(defaultDatePreset)!.endDate;
 
-  const analytics = await getGlobalAnalytics({ startDate, endDate });
+  const [analytics, recentFeedback] = await Promise.all([
+    getGlobalAnalytics({ startDate, endDate }),
+    getRecentFeedbackRows({ startDate, endDate }, undefined, 25),
+  ]);
 
   return (
     <div className="space-y-6 pb-8">
@@ -71,6 +75,14 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         questions={analytics.questions}
         summaries={analytics.summaries}
         trends={analytics.trends}
+      />
+
+      <FeedbackLogTable
+        title="Recent submissions"
+        description="Latest feedback entries in the selected date range, including the signed-in user who submitted them."
+        questions={analytics.questions}
+        rows={recentFeedback}
+        showStore
       />
 
       <section className="panel p-5">

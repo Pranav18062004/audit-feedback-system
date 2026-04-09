@@ -328,7 +328,11 @@ export async function getStoreAnalytics(storeId: string, range: RangeInput) {
   };
 }
 
-export async function getFeedbackExportRows(range: RangeInput, storeId?: string) {
+export async function getFeedbackExportRows(
+  range: RangeInput,
+  storeId?: string,
+  limit?: number,
+) {
   const supabase = getSupabaseServiceRoleClient();
   let query = supabase
     .from("feedback")
@@ -343,6 +347,10 @@ export async function getFeedbackExportRows(range: RangeInput, storeId?: string)
     query = query.eq("store_id", storeId);
   }
 
+  if (typeof limit === "number") {
+    query = query.limit(limit);
+  }
+
   const { data, error } = await query;
 
   if (error) {
@@ -350,6 +358,10 @@ export async function getFeedbackExportRows(range: RangeInput, storeId?: string)
   }
 
   return (data ?? []) as unknown as RawFeedbackRow[];
+}
+
+export async function getRecentFeedbackRows(range: RangeInput, storeId?: string, limit = 25) {
+  return getFeedbackExportRows(range, storeId, limit);
 }
 
 export async function getAllowedUsersForDashboard() {

@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import { LazyStoreDetailCharts } from "@/components/charts/lazy-store-detail-charts";
 import { DateRangeFilter } from "@/components/date-range-filter";
 import { ExportButtons } from "@/components/export-buttons";
+import { FeedbackLogTable } from "@/components/feedback-log-table";
 import { StatCard } from "@/components/stat-card";
 import { defaultDatePreset } from "@/config/feedback";
-import { getStoreAnalytics } from "@/lib/queries";
+import { getRecentFeedbackRows, getStoreAnalytics } from "@/lib/queries";
 import { formatCount, formatRating, getDateRangeFromPreset } from "@/lib/utils";
 
 type StoreDashboardPageProps = {
@@ -32,7 +33,10 @@ export default async function StoreDashboardPage({
       ? filters.endDate
       : derivedRange?.endDate ?? getDateRangeFromPreset(defaultDatePreset)!.endDate;
 
-  const analytics = await getStoreAnalytics(storeId, { startDate, endDate });
+  const [analytics, recentFeedback] = await Promise.all([
+    getStoreAnalytics(storeId, { startDate, endDate }),
+    getRecentFeedbackRows({ startDate, endDate }, storeId, 25),
+  ]);
 
   if (!analytics) {
     notFound();
@@ -109,6 +113,13 @@ export default async function StoreDashboardPage({
           ))}
         </div>
       </section>
+
+      <FeedbackLogTable
+        title="Recent submissions"
+        description="Latest feedback entries for this store in the selected date range."
+        questions={analytics.questions}
+        rows={recentFeedback}
+      />
     </div>
   );
 }
