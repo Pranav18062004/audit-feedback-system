@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FeedbackForm } from "@/components/feedback-form";
 import { SectionHeading } from "@/components/section-heading";
-import { requireAllowedUser } from "@/lib/access";
+import { requireProfiledUser } from "@/lib/access";
 import { getActiveQuestions, getStoreById } from "@/lib/queries";
 
 type FeedbackPageProps = {
@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 export default async function FeedbackPage({ params }: FeedbackPageProps) {
   const { storeId } = await params;
-  await requireAllowedUser(`/feedback/${storeId}`);
+  await requireProfiledUser(`/feedback/${storeId}`);
   const [store, questions] = await Promise.all([getStoreById(storeId), getActiveQuestions()]);
 
   if (!store || questions.length === 0) {

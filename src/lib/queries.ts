@@ -337,7 +337,7 @@ export async function getFeedbackExportRows(
   let query = supabase
     .from("feedback")
     .select(
-      "id, store_id, created_at, comments, submitted_by_email, stores(name, code), feedback_ratings(rating, questions(id, slug, title))",
+      "id, store_id, created_at, comments, submitted_by_name, submitted_by_email, stores(name, code), feedback_ratings(rating, questions(id, slug, title))",
     )
     .gte("created_at", `${range.startDate}T00:00:00.000Z`)
     .lte("created_at", `${range.endDate}T23:59:59.999Z`)

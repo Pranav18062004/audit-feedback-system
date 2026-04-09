@@ -29,6 +29,14 @@ export type AllowedUser = {
   updated_at: string;
 };
 
+export type UserProfile = {
+  id: string;
+  email: string;
+  full_name: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export type StoreMetricRow = {
   store_id: string;
   metric_date: string;
@@ -43,6 +51,7 @@ export type RawFeedbackRow = {
   store_id: string;
   created_at: string;
   comments: string | null;
+  submitted_by_name: string;
   submitted_by_email: string;
   feedback_ratings: Array<{
     rating: number;

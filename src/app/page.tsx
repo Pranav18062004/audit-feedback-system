@@ -1,12 +1,12 @@
 import { SectionHeading } from "@/components/section-heading";
 import { StoreCard } from "@/components/store-card";
-import { requireAllowedUser } from "@/lib/access";
+import { requireProfiledUser } from "@/lib/access";
 import { getActiveStores } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  await requireAllowedUser("/");
+  await requireProfiledUser("/");
   const stores = await getActiveStores();
 
   return (

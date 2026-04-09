@@ -31,6 +31,7 @@ export async function GET(request: Request) {
       store_name: row.stores?.name ?? "",
       store_code: row.stores?.code ?? "",
       created_at: row.created_at,
+      submitted_by_name: row.submitted_by_name,
       submitted_by_email: row.submitted_by_email,
       comments: row.comments ?? "",
     };

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAllowedApiAccess } from "@/lib/access";
+import { getProfiledApiAccess } from "@/lib/access";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 type FeedbackRequest = {
@@ -12,7 +12,7 @@ type FeedbackRequest = {
 };
 
 export async function POST(request: Request) {
-  const accessResult = await getAllowedApiAccess();
+  const accessResult = await getProfiledApiAccess();
   if (!accessResult.ok) {
     return NextResponse.json({ message: accessResult.message }, { status: accessResult.status });
   }
@@ -25,6 +25,7 @@ export async function POST(request: Request) {
 
   const supabase = await getSupabaseServerClient();
   const rpcPayload = {
+    p_submitted_by_name: accessResult.access.fullName,
     p_submitted_by_email: accessResult.access.email,
     p_store_id: payload.storeId,
     p_comments: payload.comments?.trim() || null,

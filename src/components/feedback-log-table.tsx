@@ -52,7 +52,8 @@ export function FeedbackLogTable({
                 return (
                   <tr key={row.id} className="align-top border-b border-card-border/80 last:border-b-0">
                     <td className="py-4 pr-4">
-                      <div className="font-medium text-foreground">{row.submitted_by_email}</div>
+                      <div className="font-medium text-foreground">{row.submitted_by_name}</div>
+                      <div className="text-muted">{row.submitted_by_email}</div>
                     </td>
                     {showStore ? (
                       <td className="py-4 pr-4">

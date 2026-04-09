@@ -23,13 +23,33 @@ create table if not exists public.allowed_users (
 create unique index if not exists allowed_users_email_idx on public.allowed_users (email);
 create index if not exists allowed_users_role_active_idx on public.allowed_users (role, is_active, created_at);
 
+create table if not exists public.user_profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  email text not null,
+  full_name text not null check (char_length(trim(full_name)) between 2 and 100),
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now()),
+  constraint user_profiles_email_format check (position('@' in email) > 1),
+  constraint user_profiles_email_lowercase check (email = lower(email))
+);
+
+create unique index if not exists user_profiles_email_idx on public.user_profiles (email);
+
 create table if not exists public.feedback (
   id uuid primary key default gen_random_uuid(),
   store_id uuid not null references public.stores(id) on delete cascade,
   created_at timestamptz not null default timezone('utc', now()),
+  submitted_by_name text,
   submitted_by_email text,
   comments text check (char_length(coalesce(comments, '')) <= 500)
 );
+
+update public.feedback
+set submitted_by_name = coalesce(submitted_by_name, 'Legacy user')
+where submitted_by_name is null;
+
+alter table public.feedback
+alter column submitted_by_name set not null;
 
 update public.feedback
 set submitted_by_email = coalesce(submitted_by_email, 'legacy@unknown.local')
@@ -108,6 +128,12 @@ execute function public.touch_updated_at();
 drop trigger if exists trg_allowed_users_touch_updated_at on public.allowed_users;
 create trigger trg_allowed_users_touch_updated_at
 before update on public.allowed_users
+for each row
+execute function public.touch_updated_at();
+
+drop trigger if exists trg_user_profiles_touch_updated_at on public.user_profiles;
+create trigger trg_user_profiles_touch_updated_at
+before update on public.user_profiles
 for each row
 execute function public.touch_updated_at();
 
@@ -192,7 +218,9 @@ end;
 $$;
 
 drop function if exists public.submit_feedback(uuid, text, jsonb);
+drop function if exists public.submit_feedback(text, uuid, text, jsonb);
 create or replace function public.submit_feedback(
+  p_submitted_by_name text,
   p_submitted_by_email text,
   p_store_id uuid,
   p_comments text default null,
@@ -207,6 +235,7 @@ declare
   v_feedback_id uuid;
   v_created_at timestamptz := timezone('utc', now());
   v_rating jsonb;
+  v_name text;
   v_email text;
   v_question_id uuid;
   v_score integer;
@@ -215,7 +244,12 @@ declare
   v_active_question_count integer;
   v_submitted_question_count integer;
 begin
+  v_name := trim(coalesce(p_submitted_by_name, ''));
   v_email := lower(trim(coalesce(p_submitted_by_email, '')));
+
+  if v_name = '' then
+    raise exception 'A submitter name is required.';
+  end if;
 
   if v_email = '' then
     raise exception 'A verified email is required.';
@@ -247,8 +281,20 @@ begin
     raise exception 'Please answer all active questions.';
   end if;
 
-  insert into public.feedback (store_id, created_at, submitted_by_email, comments)
-  values (p_store_id, v_created_at, v_email, nullif(trim(coalesce(p_comments, '')), ''))
+  insert into public.feedback (
+    store_id,
+    created_at,
+    submitted_by_name,
+    submitted_by_email,
+    comments
+  )
+  values (
+    p_store_id,
+    v_created_at,
+    v_name,
+    v_email,
+    nullif(trim(coalesce(p_comments, '')), '')
+  )
   returning id into v_feedback_id;
 
   for v_rating in
@@ -302,6 +348,7 @@ $$;
 
 alter table public.stores enable row level security;
 alter table public.allowed_users enable row level security;
+alter table public.user_profiles enable row level security;
 alter table public.feedback enable row level security;
 alter table public.questions enable row level security;
 alter table public.feedback_ratings enable row level security;
@@ -330,6 +377,34 @@ for select
 to authenticated
 using (
   is_active = true
+  and email = lower(coalesce(auth.jwt() ->> 'email', ''))
+);
+
+drop policy if exists "user_profiles_select_self" on public.user_profiles;
+create policy "user_profiles_select_self"
+on public.user_profiles
+for select
+to authenticated
+using (id = auth.uid());
+
+drop policy if exists "user_profiles_insert_self" on public.user_profiles;
+create policy "user_profiles_insert_self"
+on public.user_profiles
+for insert
+to authenticated
+with check (
+  id = auth.uid()
+  and email = lower(coalesce(auth.jwt() ->> 'email', ''))
+);
+
+drop policy if exists "user_profiles_update_self" on public.user_profiles;
+create policy "user_profiles_update_self"
+on public.user_profiles
+for update
+to authenticated
+using (id = auth.uid())
+with check (
+  id = auth.uid()
   and email = lower(coalesce(auth.jwt() ->> 'email', ''))
 );
 
@@ -369,7 +444,8 @@ to authenticated
 using (false);
 
 comment on table public.allowed_users is 'Application access list managed by admins. Only active email addresses can use the app.';
-comment on table public.feedback is 'Authenticated audit feedback with the verified submitter email recorded for traceability.';
+comment on table public.user_profiles is 'First-time profile names collected from signed-in users and reused for future submissions.';
+comment on table public.feedback is 'Authenticated audit feedback with the submitter name and verified email recorded for traceability.';
 comment on table public.questions is 'Manager-configurable 1-10 rating questions used by the feedback form.';
 
-grant execute on function public.submit_feedback(text, uuid, text, jsonb) to authenticated;
+grant execute on function public.submit_feedback(text, text, uuid, text, jsonb) to authenticated;

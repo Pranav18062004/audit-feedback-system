@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAllowedUserByEmail } from "@/lib/access";
+import { getAllowedUserByEmail, getUserProfileById } from "@/lib/access";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 function getSafeRedirectTo(value: string | null) {
@@ -29,7 +29,16 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/login?error=auth", request.url));
   }
 
-  const allowedUser = await getAllowedUserByEmail(user.email);
+  const [allowedUser, profile] = await Promise.all([
+    getAllowedUserByEmail(user.email),
+    getUserProfileById(user.id),
+  ]);
+
+  if (!profile) {
+    const welcomeUrl = new URL("/welcome", request.url);
+    welcomeUrl.searchParams.set("redirectTo", redirectTo);
+    return NextResponse.redirect(welcomeUrl);
+  }
 
   const nextPath =
     redirectTo.startsWith("/dashboard")
