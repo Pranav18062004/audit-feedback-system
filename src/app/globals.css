@@ -135,6 +135,7 @@ select {
   padding: 0 14px;
   font-size: 14px;
   font-weight: 500;
+  white-space: normal;
 }
 
 .button-secondary:hover {
@@ -153,5 +154,12 @@ select {
 @media (max-width: 640px) {
   .page-shell {
     width: min(1240px, calc(100vw - 1rem));
+  }
+
+  .button-primary,
+  .button-secondary {
+    min-height: 38px;
+    padding-inline: 12px;
+    font-size: 13px;
   }
 }

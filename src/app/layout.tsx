@@ -59,19 +59,21 @@ export default async function RootLayout({
         >
           <div className="flex min-h-screen flex-col">
             <header className="border-b border-card-border bg-card">
-              <div className="page-shell flex items-center justify-between gap-4 px-4 py-4">
-                <div className="flex items-center gap-3">
+              <div className="page-shell flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex min-w-0 items-center gap-3">
                   <Image
                     src="/millenium-logo.png"
                     alt="Millenium Audit logo"
                     width={54}
                     height={28}
-                    className="h-10 w-auto"
+                    className="h-9 w-auto shrink-0 sm:h-10"
                     priority
                   />
-                  <div className="flex flex-col">
-                    <span className="text-base font-semibold text-foreground">Audit Feedback System</span>
-                    <span className="text-sm text-muted">Millenium Audit</span>
+                  <div className="flex min-w-0 flex-col">
+                    <span className="text-sm font-semibold text-foreground sm:text-base">
+                      Audit Feedback System
+                    </span>
+                    <span className="text-xs text-muted sm:text-sm">Millenium Audit</span>
                   </div>
                 </div>
                 <HeaderActions

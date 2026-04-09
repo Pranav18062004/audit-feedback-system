@@ -13,21 +13,23 @@ type HeaderActionsProps = {
 export function HeaderActions({ isSignedIn, isAdmin, email }: HeaderActionsProps) {
   const pathname = usePathname();
   const inDashboard = pathname === "/dashboard" || pathname.startsWith("/dashboard/");
+  const actionClass =
+    "button-secondary min-w-0 px-3 text-center text-sm sm:px-4";
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex w-full flex-wrap items-center justify-start gap-2 sm:w-auto sm:justify-end">
       {inDashboard ? (
         <>
-          <Link href="/" className="button-secondary">
+          <Link href="/" className={actionClass}>
             Home
           </Link>
           <form action="/api/dashboard/logout" method="post">
-            <button type="submit" className="button-secondary">
+            <button type="submit" className={actionClass}>
               Lock
             </button>
           </form>
           <form action="/auth/logout" method="post">
-            <button type="submit" className="button-secondary">
+            <button type="submit" className={actionClass}>
               Sign out
             </button>
           </form>
@@ -35,14 +37,14 @@ export function HeaderActions({ isSignedIn, isAdmin, email }: HeaderActionsProps
       ) : isSignedIn ? (
         <>
           {isAdmin ? (
-            <Link href="/dashboard/login" className="button-secondary">
+            <Link href="/dashboard/login" className={actionClass}>
               Open analytics dashboard
             </Link>
           ) : null}
           <form action="/auth/logout" method="post">
             <button
               type="submit"
-              className="button-secondary"
+              className={actionClass}
               title={email ? `Signed in as ${email}` : undefined}
             >
               Sign out
@@ -50,11 +52,13 @@ export function HeaderActions({ isSignedIn, isAdmin, email }: HeaderActionsProps
           </form>
         </>
       ) : (
-        <Link href="/login" className="button-secondary">
+        <Link href="/login" className={actionClass}>
           Sign in
         </Link>
       )}
-      <ThemeToggle />
+      <div className="shrink-0">
+        <ThemeToggle />
+      </div>
     </div>
   );
 }
