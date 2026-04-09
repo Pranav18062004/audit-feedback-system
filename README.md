@@ -4,11 +4,12 @@ Production-ready audit feedback web app built with Next.js, Tailwind CSS, Supaba
 
 ## Features
 - Supabase Auth Google sign-in
-- Approved-email access control with admin and user roles
+- Any signed-in Google user can submit feedback
+- Admin-email dashboard access with an extra passcode lock
 - Mobile-first store feedback flow for signed-in users
 - Shared-passcode protected analytics dashboard for admins
 - Manager-configurable 1-10 rating questions from the dashboard
-- Admin-managed approved user email list
+- Admin-managed dashboard admin email list
 - Daily precomputed metrics via Supabase Postgres function and `store_metrics`
 - CSV export for aggregate metrics and raw feedback including submitter email
 - Dark mode and installable PWA shell
@@ -44,7 +45,7 @@ Open [http://localhost:3000](http://localhost:3000).
 - In Supabase Auth, enable the Google provider and add your local and production callback URLs:
   - `http://localhost:3000/auth/callback`
   - your deployed `https://.../auth/callback`
-- Insert your first admin email into `public.allowed_users`
+- Insert your first dashboard admin email into `public.allowed_users`
 - Review [`supabase/README.md`](./supabase/README.md)
 
 ## Production notes

@@ -2,11 +2,6 @@ import { NextResponse } from "next/server";
 import { getAdminApiAccess, normalizeEmail } from "@/lib/access";
 import { hasDashboardSession } from "@/lib/dashboard-auth";
 import { getSupabaseServiceRoleClient } from "@/lib/supabase/server";
-import type { AllowedUserRole } from "@/lib/supabase/types";
-
-function normalizeRole(value: unknown): AllowedUserRole {
-  return value === "admin" ? "admin" : "user";
-}
 
 export async function POST(request: Request) {
   const accessResult = await getAdminApiAccess();
@@ -20,7 +15,6 @@ export async function POST(request: Request) {
 
   const payload = (await request.json()) as {
     email?: string;
-    role?: AllowedUserRole;
     is_active?: boolean;
   };
 
@@ -31,7 +25,7 @@ export async function POST(request: Request) {
   const supabase = getSupabaseServiceRoleClient();
   const { error } = await supabase.from("allowed_users").insert({
     email: normalizeEmail(payload.email),
-    role: normalizeRole(payload.role),
+    role: "admin",
     is_active: payload.is_active ?? true,
   } as never);
 
@@ -55,7 +49,6 @@ export async function PATCH(request: Request) {
   const payload = (await request.json()) as {
     id?: string;
     email?: string;
-    role?: AllowedUserRole;
     is_active?: boolean;
   };
 
@@ -72,7 +65,7 @@ export async function PATCH(request: Request) {
     .from("allowed_users")
     .update({
       email: normalizeEmail(payload.email),
-      role: normalizeRole(payload.role),
+      role: "admin",
       is_active: payload.is_active ?? true,
     } as never)
     .eq("id", payload.id);

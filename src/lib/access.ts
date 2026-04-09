@@ -61,7 +61,7 @@ export async function getCurrentUserAccess(): Promise<CurrentUserAccess> {
     user,
     email,
     allowedUser,
-    isAllowed: Boolean(allowedUser),
+    isAllowed: true,
     isAdmin: allowedUser?.role === "admin",
   };
 }
@@ -71,10 +71,6 @@ export async function requireAllowedUser(redirectTo = "/") {
 
   if (!access.user) {
     redirect(`/login?redirectTo=${encodeURIComponent(redirectTo)}`);
-  }
-
-  if (!access.isAllowed) {
-    redirect("/login?error=not-allowed");
   }
 
   return access;
@@ -101,11 +97,11 @@ export async function getAllowedApiAccess() {
     };
   }
 
-  if (!access.isAllowed || !access.email) {
+  if (!access.email) {
     return {
       ok: false as const,
       status: 403,
-      message: "Your email is not allowed to access this application.",
+      message: "A verified Google email is required.",
     };
   }
 

@@ -30,14 +30,10 @@ export async function GET(request: Request) {
   }
 
   const allowedUser = await getAllowedUserByEmail(user.email);
-  if (!allowedUser) {
-    await supabase.auth.signOut();
-    return NextResponse.redirect(new URL("/login?error=not-allowed", request.url));
-  }
 
   const nextPath =
     redirectTo.startsWith("/dashboard")
-      ? allowedUser.role === "admin"
+      ? allowedUser?.role === "admin"
         ? `/dashboard/login?redirectTo=${encodeURIComponent(redirectTo)}`
         : "/"
       : redirectTo;

@@ -13,7 +13,7 @@
 - Open the Supabase SQL editor.
 - Run `supabase/schema.sql`.
 - Run `supabase/seed.sql`.
-- Add your first admin email:
+- Add your first dashboard admin email:
 
 ```sql
 insert into public.allowed_users (email, role, is_active)
@@ -31,7 +31,7 @@ values ('admin@yourcompany.com', 'admin', true);
 ## 4. RLS behavior
 - `stores`: authenticated `SELECT` allowed for active stores.
 - `questions`: authenticated `SELECT` allowed for active questions.
-- `allowed_users`: authenticated users can read only their own active access row.
+- `allowed_users`: authenticated users can read only their own active admin-access row.
 - `feedback`: direct `SELECT` denied.
 - `feedback_ratings`: direct `SELECT` denied.
 - `store_metrics`: browser access denied; reads should go through server-side dashboard code using the service role key.

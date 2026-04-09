@@ -20,7 +20,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const error = typeof params.error === "string" ? params.error : null;
   const access = await getCurrentUserAccess();
 
-  if (access.isAllowed) {
+  if (access.user) {
     if (redirectTo.startsWith("/dashboard")) {
       redirect(access.isAdmin ? `/dashboard/login?redirectTo=${encodeURIComponent(redirectTo)}` : "/");
     }
@@ -33,26 +33,11 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       <section className="panel w-full p-6 sm:p-8">
         <h2 className="text-2xl font-semibold text-foreground">Sign in</h2>
         <p className="mt-2 text-sm leading-6 text-muted sm:text-base">
-          Continue with Google using an email address that has already been approved by an admin.
+          Continue with Google to submit feedback. Admin Google accounts will also see the dashboard option.
         </p>
-
-        {access.user && !access.isAllowed ? (
-          <div className="mt-8 space-y-4">
-            <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-200">
-              This email is signed in, but it has not been approved for access. Ask an admin to add
-              it first.
-            </div>
-            <form action="/auth/logout" method="post">
-              <button type="submit" className="button-primary w-full">
-                Sign out
-              </button>
-            </form>
-          </div>
-        ) : (
-          <div className="mt-8">
-            <GoogleLoginButton redirectTo={redirectTo} error={error} />
-          </div>
-        )}
+        <div className="mt-8">
+          <GoogleLoginButton redirectTo={redirectTo} error={error} />
+        </div>
       </section>
     </div>
   );

@@ -9,7 +9,6 @@ type GoogleLoginButtonProps = {
 };
 
 const errorMessages: Record<string, string> = {
-  "not-allowed": "This Google account is not allowed to access the application yet.",
   auth: "Google sign-in could not be completed. Please try again.",
 };
 
@@ -59,7 +58,7 @@ export function GoogleLoginButton({ redirectTo, error }: GoogleLoginButtonProps)
       </button>
 
       <p className="text-center text-sm text-muted">
-        Use a Google account whose email has already been added by an admin.
+        Anyone with a Google account can submit feedback. Admin emails can also open the dashboard.
       </p>
     </div>
   );

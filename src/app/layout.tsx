@@ -77,7 +77,7 @@ export default async function RootLayout({
                   </div>
                 </div>
                 <HeaderActions
-                  isSignedIn={access.isAllowed}
+                  isSignedIn={Boolean(access.user)}
                   isAdmin={access.isAdmin}
                   email={access.allowedUser?.email ?? access.email}
                 />
