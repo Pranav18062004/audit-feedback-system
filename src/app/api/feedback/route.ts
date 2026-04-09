@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getSupabaseAnonServerClient } from "@/lib/supabase/server";
+import { getAllowedApiAccess } from "@/lib/access";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 type FeedbackRequest = {
   storeId?: string;
@@ -11,14 +12,20 @@ type FeedbackRequest = {
 };
 
 export async function POST(request: Request) {
+  const accessResult = await getAllowedApiAccess();
+  if (!accessResult.ok) {
+    return NextResponse.json({ message: accessResult.message }, { status: accessResult.status });
+  }
+
   const payload = (await request.json().catch(() => null)) as FeedbackRequest | null;
 
   if (!payload?.storeId || !Array.isArray(payload.ratings) || payload.ratings.length === 0) {
     return NextResponse.json({ message: "Invalid feedback payload." }, { status: 400 });
   }
 
-  const supabase = getSupabaseAnonServerClient();
+  const supabase = await getSupabaseServerClient();
   const rpcPayload = {
+    p_submitted_by_email: accessResult.access.email,
     p_store_id: payload.storeId,
     p_comments: payload.comments?.trim() || null,
     p_ratings: payload.ratings.map((rating) => ({

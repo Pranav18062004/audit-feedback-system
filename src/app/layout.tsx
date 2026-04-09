@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Image from "next/image";
 import { Suspense } from "react";
+import { HeaderActions } from "@/components/header-actions";
 import { RegisterServiceWorker } from "@/components/pwa/register-service-worker";
 import { ThemeProvider } from "@/components/theme-provider";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { getCurrentUserAccess } from "@/lib/access";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s | Audit Feedback System",
   },
   description:
-    "Mobile-first anonymous audit feedback and store analytics powered by Next.js and Supabase.",
+    "Mobile-first audit feedback and store analytics powered by Next.js and Supabase.",
   applicationName: "Audit Feedback System",
   keywords: [
     "audit",
@@ -34,11 +36,13 @@ export const metadata: Metadata = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const access = await getCurrentUserAccess();
+
   return (
     <html
       lang="en"
@@ -53,19 +57,31 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex min-h-screen flex-col">
-            <div className="page-shell relative z-10 flex flex-1 flex-col px-2 py-4 sm:px-4 sm:py-6">
-              <header className="mb-6 flex items-center justify-between gap-4 rounded-full border border-card-border/80 bg-card/80 px-4 py-3 backdrop-blur sm:px-6">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted">
-                    Millenium Audit
-                  </p>
-                  <h1 className="text-lg font-semibold text-foreground sm:text-xl">
-                    Audit Feedback System
-                  </h1>
+          <div className="flex min-h-screen flex-col">
+            <header className="border-b border-card-border bg-card">
+              <div className="page-shell flex items-center justify-between gap-4 px-4 py-4">
+                <div className="flex items-center gap-3">
+                  <Image
+                    src="/millenium-logo.png"
+                    alt="Millenium Audit logo"
+                    width={54}
+                    height={28}
+                    className="h-10 w-auto"
+                    priority
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-base font-semibold text-foreground">Audit Feedback System</span>
+                    <span className="text-sm text-muted">Millenium Audit</span>
+                  </div>
                 </div>
-                <ThemeToggle />
-              </header>
+                <HeaderActions
+                  isSignedIn={access.isAllowed}
+                  isAdmin={access.isAdmin}
+                  email={access.allowedUser?.email ?? access.email}
+                />
+              </div>
+            </header>
+            <div className="page-shell flex flex-1 flex-col px-4 py-6">
               <main className="flex flex-1 flex-col">{children}</main>
             </div>
           </div>

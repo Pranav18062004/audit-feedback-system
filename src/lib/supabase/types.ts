@@ -18,6 +18,17 @@ export type Question = {
   updated_at: string;
 };
 
+export type AllowedUserRole = "admin" | "user";
+
+export type AllowedUser = {
+  id: string;
+  email: string;
+  role: AllowedUserRole;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export type StoreMetricRow = {
   store_id: string;
   metric_date: string;
@@ -32,6 +43,7 @@ export type RawFeedbackRow = {
   store_id: string;
   created_at: string;
   comments: string | null;
+  submitted_by_email: string;
   feedback_ratings: Array<{
     rating: number;
     questions: Pick<Question, "id" | "slug" | "title"> | null;

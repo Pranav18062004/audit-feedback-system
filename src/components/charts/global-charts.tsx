@@ -18,7 +18,7 @@ import {
 import type { Question, StoreSummary } from "@/lib/supabase/types";
 import { formatRating, formatShortDate } from "@/lib/utils";
 
-const pieColors = ["#c96838", "#d98f5f", "#4e8d75", "#6d6257", "#f1c7b2"];
+const pieColors = ["#f5333f", "#b3b5b8", "#8e9094", "#d4d7db", "#232528"];
 type TooltipValue = number | string | ReadonlyArray<number | string> | undefined;
 
 function toNumericTooltipValue(value: TooltipValue) {
@@ -52,7 +52,7 @@ export function GlobalCharts({ questions, summaries, trends }: GlobalChartsProps
 
   return (
     <div className="grid gap-5 xl:grid-cols-3">
-      <div className="chart-card rounded-[28px] border border-card-border bg-card p-5 xl:col-span-2">
+      <div className="chart-card p-5 xl:col-span-2">
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-foreground">Store comparison</h3>
           <p className="text-sm text-muted">
@@ -66,12 +66,12 @@ export function GlobalCharts({ questions, summaries, trends }: GlobalChartsProps
             <YAxis domain={[0, 10]} />
             <Tooltip formatter={(value) => formatRating(toNumericTooltipValue(value))} />
             <Legend />
-            <Bar dataKey="overall" name="Overall" fill="#c96838" radius={[8, 8, 0, 0]} />
+            <Bar dataKey="overall" name="Overall" fill="#f5333f" radius={[8, 8, 0, 0]} />
             {comparisonQuestion ? (
               <Bar
                 dataKey="comparisonQuestion"
                 name={comparisonQuestion.title}
-                fill="#4e8d75"
+                fill="#8e9094"
                 radius={[8, 8, 0, 0]}
               />
             ) : null}
@@ -79,7 +79,7 @@ export function GlobalCharts({ questions, summaries, trends }: GlobalChartsProps
         </ResponsiveContainer>
       </div>
 
-      <div className="chart-card rounded-[28px] border border-card-border bg-card p-5">
+      <div className="chart-card p-5">
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-foreground">Feedback share</h3>
           <p className="text-sm text-muted">Contribution to total feedback volume.</p>
@@ -96,7 +96,7 @@ export function GlobalCharts({ questions, summaries, trends }: GlobalChartsProps
         </ResponsiveContainer>
       </div>
 
-      <div className="chart-card rounded-[28px] border border-card-border bg-card p-5 xl:col-span-3">
+      <div className="chart-card p-5 xl:col-span-3">
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-foreground">Trend over time</h3>
           <p className="text-sm text-muted">Daily feedback volume and overall average.</p>
@@ -113,8 +113,8 @@ export function GlobalCharts({ questions, summaries, trends }: GlobalChartsProps
               }
             />
             <Legend />
-            <Line yAxisId="left" type="monotone" dataKey="overall" name="Overall" stroke="#c96838" strokeWidth={3} dot={false} />
-            <Line yAxisId="right" type="monotone" dataKey="feedbackCount" name="Feedback count" stroke="#4e8d75" strokeWidth={3} dot={false} />
+            <Line yAxisId="left" type="monotone" dataKey="overall" name="Overall" stroke="#f5333f" strokeWidth={3} dot={false} />
+            <Line yAxisId="right" type="monotone" dataKey="feedbackCount" name="Feedback count" stroke="#8e9094" strokeWidth={3} dot={false} />
           </LineChart>
         </ResponsiveContainer>
       </div>

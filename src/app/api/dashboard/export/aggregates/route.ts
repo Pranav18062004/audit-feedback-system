@@ -1,9 +1,15 @@
 import Papa from "papaparse";
 import { NextResponse } from "next/server";
+import { getAdminApiAccess } from "@/lib/access";
 import { hasDashboardSession } from "@/lib/dashboard-auth";
 import { getAggregateExportRows } from "@/lib/queries";
 
 export async function GET(request: Request) {
+  const accessResult = await getAdminApiAccess();
+  if (!accessResult.ok) {
+    return new NextResponse(accessResult.message, { status: accessResult.status });
+  }
+
   if (!(await hasDashboardSession())) {
     return new NextResponse("Unauthorized", { status: 401 });
   }

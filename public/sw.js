@@ -1,8 +1,8 @@
-const CACHE_NAME = "audit-feedback-shell-v1";
-const APP_SHELL = ["/", "/manifest.webmanifest"];
+const CACHE_NAME = "audit-feedback-static-v2";
+const STATIC_ASSETS = ["/manifest.webmanifest", "/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)));
   self.skipWaiting();
 });
 
@@ -17,6 +17,20 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") {
+    return;
+  }
+
+  const requestUrl = new URL(event.request.url);
+  const isStaticAsset =
+    requestUrl.pathname.startsWith("/_next/") ||
+    requestUrl.pathname.endsWith(".js") ||
+    requestUrl.pathname.endsWith(".css") ||
+    requestUrl.pathname.endsWith(".png") ||
+    requestUrl.pathname.endsWith(".svg") ||
+    requestUrl.pathname.endsWith(".ico") ||
+    requestUrl.pathname.endsWith(".webmanifest");
+
+  if (!isStaticAsset) {
     return;
   }
 
@@ -36,7 +50,7 @@ self.addEventListener("fetch", (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cloned));
           return response;
         })
-        .catch(() => caches.match("/"));
+        .catch(() => caches.match("/manifest.webmanifest"));
     })
   );
 });

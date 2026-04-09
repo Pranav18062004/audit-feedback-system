@@ -8,16 +8,11 @@ export default async function DashboardQuestionsPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      <section className="glass-panel rounded-[32px] p-6 sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.32em] text-accent">
-          Feedback configuration
-        </p>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground">
-          Manage rating questions
-        </h2>
-        <p className="mt-3 max-w-2xl text-sm leading-7 text-muted sm:text-base">
+      <section className="space-y-2 border-b border-card-border pb-4">
+        <h2 className="text-2xl font-semibold text-foreground">Manage rating questions</h2>
+        <p className="max-w-2xl text-sm leading-6 text-muted sm:text-base">
           Managers can add, rename, reorder, or deactivate the 1-10 rating questions that appear
-          on the public feedback form.
+          on the feedback form.
         </p>
       </section>
 

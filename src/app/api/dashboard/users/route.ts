@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
-import { getAdminApiAccess } from "@/lib/access";
+import { getAdminApiAccess, normalizeEmail } from "@/lib/access";
 import { hasDashboardSession } from "@/lib/dashboard-auth";
-import { slugifyQuestionTitle } from "@/lib/question-utils";
 import { getSupabaseServiceRoleClient } from "@/lib/supabase/server";
+import type { AllowedUserRole } from "@/lib/supabase/types";
 
-function normalizeSortOrder(value: unknown) {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : 0;
+function normalizeRole(value: unknown): AllowedUserRole {
+  return value === "admin" ? "admin" : "user";
 }
 
 export async function POST(request: Request) {
@@ -20,36 +19,19 @@ export async function POST(request: Request) {
   }
 
   const payload = (await request.json()) as {
-    title?: string;
-    description?: string;
-    sort_order?: number;
+    email?: string;
+    role?: AllowedUserRole;
     is_active?: boolean;
   };
 
-  const title = payload.title?.trim();
-  if (!title) {
-    return NextResponse.json({ message: "Title is required." }, { status: 400 });
+  if (!payload.email?.trim()) {
+    return NextResponse.json({ message: "Email is required." }, { status: 400 });
   }
 
   const supabase = getSupabaseServiceRoleClient();
-  const baseSlug = slugifyQuestionTitle(title) || "question";
-  let slug = baseSlug;
-  let suffix = 1;
-
-  while (true) {
-    const { data } = await supabase.from("questions").select("id").eq("slug", slug).maybeSingle();
-    if (!data) {
-      break;
-    }
-    suffix += 1;
-    slug = `${baseSlug}-${suffix}`;
-  }
-
-  const { error } = await supabase.from("questions").insert({
-    slug,
-    title,
-    description: payload.description?.trim() || null,
-    sort_order: normalizeSortOrder(payload.sort_order),
+  const { error } = await supabase.from("allowed_users").insert({
+    email: normalizeEmail(payload.email),
+    role: normalizeRole(payload.role),
     is_active: payload.is_active ?? true,
   } as never);
 
@@ -72,37 +54,25 @@ export async function PATCH(request: Request) {
 
   const payload = (await request.json()) as {
     id?: string;
-    title?: string;
-    description?: string;
-    sort_order?: number;
+    email?: string;
+    role?: AllowedUserRole;
     is_active?: boolean;
   };
 
   if (!payload.id) {
-    return NextResponse.json({ message: "Question id is required." }, { status: 400 });
+    return NextResponse.json({ message: "User id is required." }, { status: 400 });
   }
 
-  const title = payload.title?.trim();
-  if (!title) {
-    return NextResponse.json({ message: "Title is required." }, { status: 400 });
+  if (!payload.email?.trim()) {
+    return NextResponse.json({ message: "Email is required." }, { status: 400 });
   }
 
   const supabase = getSupabaseServiceRoleClient();
-  const { data: existing } = await supabase
-    .from("questions")
-    .select("slug")
-    .eq("id", payload.id)
-    .maybeSingle();
-
-  const slug = existing?.slug ?? (slugifyQuestionTitle(title) || "question");
-
   const { error } = await supabase
-    .from("questions")
+    .from("allowed_users")
     .update({
-      slug,
-      title,
-      description: payload.description?.trim() || null,
-      sort_order: normalizeSortOrder(payload.sort_order),
+      email: normalizeEmail(payload.email),
+      role: normalizeRole(payload.role),
       is_active: payload.is_active ?? true,
     } as never)
     .eq("id", payload.id);

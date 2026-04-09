@@ -78,7 +78,7 @@ export function QuestionManager({ questions }: QuestionManagerProps) {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[32px] border border-card-border bg-card p-5">
+      <section className="panel p-5">
         <h3 className="text-lg font-semibold text-foreground">Add a question</h3>
         <p className="mt-1 text-sm text-muted">
           Questions are always 1-10 ratings. The optional comments box stays unchanged.
@@ -89,7 +89,7 @@ export function QuestionManager({ questions }: QuestionManagerProps) {
             <input
               name="title"
               required
-              className="w-full rounded-full border border-card-border bg-background/70 px-4 py-3 text-sm text-foreground focus:border-accent focus:outline-none"
+              className="field-input"
               placeholder="Example: Staff knowledge"
             />
           </label>
@@ -99,7 +99,7 @@ export function QuestionManager({ questions }: QuestionManagerProps) {
               name="sort_order"
               type="number"
               defaultValue={questions.length + 1}
-              className="w-full rounded-full border border-card-border bg-background/70 px-4 py-3 text-sm text-foreground focus:border-accent focus:outline-none"
+              className="field-input"
             />
           </label>
           <label className="space-y-2 text-sm font-medium text-foreground lg:col-span-2">
@@ -107,18 +107,18 @@ export function QuestionManager({ questions }: QuestionManagerProps) {
             <textarea
               name="description"
               rows={3}
-              className="w-full rounded-3xl border border-card-border bg-background/70 px-4 py-3 text-sm text-foreground focus:border-accent focus:outline-none"
-              placeholder="Optional helper text for the public form."
+              className="field-input min-h-24 resize-y"
+              placeholder="Optional helper text for the feedback form."
             />
           </label>
           <label className="inline-flex items-center gap-3 text-sm font-medium text-foreground">
             <input name="is_active" type="checkbox" defaultChecked className="h-4 w-4 rounded border-card-border" />
-            Active on the public form
+            Active on the feedback form
           </label>
           <button
             type="submit"
             disabled={creating}
-            className="inline-flex min-h-12 items-center justify-center rounded-full bg-accent px-5 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-60"
+            className="button-primary disabled:opacity-60"
           >
             {creating ? "Saving..." : "Create question"}
           </button>
@@ -126,10 +126,10 @@ export function QuestionManager({ questions }: QuestionManagerProps) {
         {createError ? <p className="mt-3 text-sm font-medium text-red-600">{createError}</p> : null}
       </section>
 
-      <section className="rounded-[32px] border border-card-border bg-card p-5">
+      <section className="panel p-5">
         <h3 className="text-lg font-semibold text-foreground">Existing questions</h3>
         <p className="mt-1 text-sm text-muted">
-          Edit wording, order, or active status. Inactive questions stop appearing on the public form.
+          Edit wording, order, or active status. Inactive questions stop appearing on the feedback form.
         </p>
         <div className="mt-5 space-y-4">
           {questions.map((question) => (
@@ -169,7 +169,7 @@ function QuestionEditor({
         event.preventDefault();
         void onSave(question.id, state);
       }}
-      className="grid gap-4 rounded-[28px] border border-card-border bg-background/70 p-4 lg:grid-cols-[1fr_140px]"
+      className="subtle-panel grid gap-4 p-4 lg:grid-cols-[1fr_140px]"
     >
       <div className="grid gap-4">
         <label className="space-y-2 text-sm font-medium text-foreground">
@@ -178,7 +178,7 @@ function QuestionEditor({
             value={state.title}
             onChange={(event) => setState((current) => ({ ...current, title: event.target.value }))}
             required
-            className="w-full rounded-full border border-card-border bg-card px-4 py-3 text-sm text-foreground focus:border-accent focus:outline-none"
+            className="field-input"
           />
         </label>
         <label className="space-y-2 text-sm font-medium text-foreground">
@@ -189,7 +189,7 @@ function QuestionEditor({
             onChange={(event) =>
               setState((current) => ({ ...current, description: event.target.value }))
             }
-            className="w-full rounded-3xl border border-card-border bg-card px-4 py-3 text-sm text-foreground focus:border-accent focus:outline-none"
+            className="field-input min-h-20 resize-y"
           />
         </label>
       </div>
@@ -205,7 +205,7 @@ function QuestionEditor({
                 sort_order: Number(event.target.value),
               }))
             }
-            className="w-full rounded-full border border-card-border bg-card px-4 py-3 text-sm text-foreground focus:border-accent focus:outline-none"
+            className="field-input"
           />
         </label>
         <label className="inline-flex items-center gap-3 text-sm font-medium text-foreground">
@@ -222,7 +222,7 @@ function QuestionEditor({
         <button
           type="submit"
           disabled={isSaving}
-          className="inline-flex min-h-11 items-center justify-center rounded-full bg-accent px-4 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-60"
+          className="button-primary disabled:opacity-60"
         >
           {isSaving ? "Saving..." : "Save"}
         </button>

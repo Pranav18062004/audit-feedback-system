@@ -22,3 +22,8 @@ set
   description = excluded.description,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active;
+
+-- Add your first admin after Supabase Auth is enabled:
+-- insert into public.allowed_users (email, role, is_active)
+-- values ('admin@yourcompany.com', 'admin', true)
+-- on conflict (lower(email)) do nothing;

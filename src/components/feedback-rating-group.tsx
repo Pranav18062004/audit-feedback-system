@@ -16,7 +16,7 @@ export function FeedbackRatingGroup({
   error,
 }: FeedbackRatingGroupProps) {
   return (
-    <fieldset className="space-y-4 rounded-[28px] border border-card-border bg-card p-5">
+    <fieldset className="panel space-y-4 p-5">
       <div className="space-y-1">
         <legend className="text-base font-semibold text-foreground">{label}</legend>
         <p className="text-sm text-muted">{description}</p>
@@ -28,10 +28,10 @@ export function FeedbackRatingGroup({
           return (
             <label
               key={score}
-              className={`flex min-h-14 cursor-pointer items-center justify-center rounded-2xl border text-base font-semibold ${
+              className={`flex min-h-11 cursor-pointer items-center justify-center rounded-md border text-sm font-medium ${
                 selected
-                  ? "border-accent bg-accent text-white shadow-lg"
-                  : "border-card-border bg-background/70 text-foreground hover:border-accent/60 hover:bg-accent-soft"
+                  ? "border-accent bg-accent text-white"
+                  : "border-card-border bg-card text-foreground hover:border-accent hover:bg-accent-soft"
               }`}
             >
               <input

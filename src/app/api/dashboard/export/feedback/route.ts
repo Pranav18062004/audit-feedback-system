@@ -1,9 +1,15 @@
 import Papa from "papaparse";
 import { NextResponse } from "next/server";
+import { getAdminApiAccess } from "@/lib/access";
 import { hasDashboardSession } from "@/lib/dashboard-auth";
 import { getFeedbackExportRows } from "@/lib/queries";
 
 export async function GET(request: Request) {
+  const accessResult = await getAdminApiAccess();
+  if (!accessResult.ok) {
+    return new NextResponse(accessResult.message, { status: accessResult.status });
+  }
+
   if (!(await hasDashboardSession())) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
@@ -25,6 +31,7 @@ export async function GET(request: Request) {
       store_name: row.stores?.name ?? "",
       store_code: row.stores?.code ?? "",
       created_at: row.created_at,
+      submitted_by_email: row.submitted_by_email,
       comments: row.comments ?? "",
     };
 

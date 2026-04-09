@@ -8,6 +8,7 @@ export function PasscodeForm() {
   const [passcode, setPasscode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPasscode, setShowPasscode] = useState(false);
   const redirectTo = params.get("redirectTo") ?? "/dashboard";
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -40,28 +41,92 @@ export function PasscodeForm() {
         <label htmlFor="passcode" className="text-sm font-semibold text-foreground">
           Shared dashboard passcode
         </label>
-        <input
-          id="passcode"
-          type="password"
-          autoComplete="current-password"
-          value={passcode}
-          onChange={(event) => setPasscode(event.target.value)}
-          className="w-full rounded-full border border-card-border bg-background/70 px-4 py-3 text-base text-foreground focus:border-accent focus:outline-none"
-          placeholder="Enter passcode"
-        />
+        <div className="relative">
+          <input
+            id="passcode"
+            type={showPasscode ? "text" : "password"}
+            autoComplete="current-password"
+            value={passcode}
+            onChange={(event) => setPasscode(event.target.value)}
+            className="field-input pr-12"
+            placeholder="Enter passcode"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPasscode((current) => !current)}
+            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-muted hover:text-foreground"
+            aria-label={showPasscode ? "Hide passcode" : "Show passcode"}
+          >
+            {showPasscode ? <EyeOffIcon /> : <EyeIcon />}
+          </button>
+        </div>
       </div>
       {error ? (
-        <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-200">
+        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-200">
           {error}
         </div>
       ) : null}
       <button
         type="submit"
         disabled={loading}
-        className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-accent px-5 text-sm font-semibold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-60"
+        className="button-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading ? "Unlocking..." : "Unlock dashboard"}
       </button>
     </form>
+  );
+}
+
+function EyeIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      className="h-4 w-4"
+    >
+      <path
+        d="M1.25 10s3.25-5 8.75-5 8.75 5 8.75 5-3.25 5-8.75 5-8.75-5-8.75-5Z"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="10" cy="10" r="2.5" />
+    </svg>
+  );
+}
+
+function EyeOffIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      className="h-4 w-4"
+    >
+      <path
+        d="M2 2.5 18 17.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.7 4.15A10.85 10.85 0 0 1 10 4.08c5.5 0 8.75 5 8.75 5a15.66 15.66 0 0 1-2.93 3.3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5.2 6.05A15.2 15.2 0 0 0 1.25 10s3.25 5 8.75 5c1.05 0 2-.18 2.87-.48"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.53 8.6A2.48 2.48 0 0 0 7.5 10c0 1.38 1.12 2.5 2.5 2.5.52 0 1-.16 1.4-.43"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

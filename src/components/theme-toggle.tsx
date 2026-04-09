@@ -10,7 +10,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="inline-flex h-11 items-center justify-center rounded-full border border-card-border bg-card px-4 text-sm font-medium text-foreground hover:-translate-y-0.5 hover:border-accent/60 hover:text-accent"
+      className="button-secondary"
       aria-label="Toggle dark mode"
     >
       Theme

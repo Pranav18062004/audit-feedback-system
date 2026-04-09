@@ -32,7 +32,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     <div className="space-y-6 pb-8">
       <div className="grid gap-4 lg:grid-cols-[1fr_auto]">
         <DateRangeFilter startDate={startDate} endDate={endDate} preset={preset} />
-        <div className="glass-panel rounded-[28px] p-4">
+        <div className="panel p-4">
           <p className="text-sm font-medium text-muted">Exports</p>
           <div className="mt-3">
             <ExportButtons startDate={startDate} endDate={endDate} />
@@ -44,7 +44,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         <StatCard
           label="Total feedback"
           value={formatCount(analytics.totalFeedbackCount)}
-          hint="Anonymous submissions in range"
+          hint="Submitted responses in range"
         />
         <StatCard
           label="Overall average"
@@ -73,31 +73,29 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         trends={analytics.trends}
       />
 
-      <section className="rounded-[32px] border border-card-border bg-card p-5">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h3 className="text-lg font-semibold text-foreground">Store ranking</h3>
-            <p className="text-sm text-muted">
-              Compare stores by weighted overall score and feedback volume.
-            </p>
-          </div>
+      <section className="panel p-5">
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">Store ranking</h3>
+          <p className="text-sm text-muted">
+            Compare stores by weighted overall score and feedback volume.
+          </p>
         </div>
 
         <div className="mt-5 overflow-x-auto">
           <table className="min-w-full text-left text-sm">
             <thead className="text-muted">
               <tr>
-                <th className="pb-3 pr-4 font-medium">Rank</th>
-                <th className="pb-3 pr-4 font-medium">Store</th>
-                <th className="pb-3 pr-4 font-medium">Overall</th>
-                <th className="pb-3 pr-4 font-medium">Feedback</th>
-                <th className="pb-3 pr-4 font-medium">Region</th>
-                <th className="pb-3 font-medium">Details</th>
+                <th className="border-b border-card-border pb-3 pr-4 font-medium">Rank</th>
+                <th className="border-b border-card-border pb-3 pr-4 font-medium">Store</th>
+                <th className="border-b border-card-border pb-3 pr-4 font-medium">Overall</th>
+                <th className="border-b border-card-border pb-3 pr-4 font-medium">Feedback</th>
+                <th className="border-b border-card-border pb-3 pr-4 font-medium">Region</th>
+                <th className="border-b border-card-border pb-3 font-medium">Details</th>
               </tr>
             </thead>
             <tbody>
               {analytics.summaries.map((store, index) => (
-                <tr key={store.storeId} className="border-t border-card-border/80">
+                <tr key={store.storeId} className="border-b border-card-border/80 last:border-b-0">
                   <td className="py-4 pr-4 font-semibold text-foreground">#{index + 1}</td>
                   <td className="py-4 pr-4">
                     <div>
@@ -115,7 +113,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
                   <td className="py-4">
                     <Link
                       href={`/dashboard/stores/${store.storeId}?startDate=${startDate}&endDate=${endDate}&preset=${preset}`}
-                      className="font-semibold text-accent hover:text-accent-strong"
+                      className="font-medium text-accent hover:text-accent-strong"
                     >
                       Open
                     </Link>

@@ -51,7 +51,7 @@ export function DateRangeFilter({ startDate, endDate, preset }: DateRangeFilterP
   }
 
   return (
-    <div className="rounded-[28px] border border-card-border bg-card p-4">
+    <div className="panel p-4">
       <div className="flex flex-wrap gap-2">
         {presets.map((item) => (
           <button
@@ -59,10 +59,10 @@ export function DateRangeFilter({ startDate, endDate, preset }: DateRangeFilterP
             type="button"
             onClick={() => handlePresetChange(item.value)}
             className={cn(
-              "inline-flex min-h-11 items-center justify-center rounded-full px-4 text-sm font-medium",
+              "inline-flex min-h-10 items-center justify-center rounded-md px-3 text-sm font-medium",
               preset === item.value
                 ? "bg-accent text-white"
-                : "border border-card-border bg-background/70 text-foreground hover:border-accent/60 hover:text-accent",
+                : "border border-card-border bg-card text-foreground hover:border-accent hover:text-accent",
             )}
           >
             {item.label}
@@ -76,7 +76,7 @@ export function DateRangeFilter({ startDate, endDate, preset }: DateRangeFilterP
             type="date"
             value={startDate}
             onChange={(event) => handleCustomChange("startDate", event.target.value)}
-            className="w-full rounded-full border border-card-border bg-background/70 px-4 py-3 text-sm text-foreground focus:border-accent focus:outline-none"
+            className="field-input"
           />
         </label>
         <label className="space-y-2 text-sm font-medium text-foreground">
@@ -85,7 +85,7 @@ export function DateRangeFilter({ startDate, endDate, preset }: DateRangeFilterP
             type="date"
             value={endDate}
             onChange={(event) => handleCustomChange("endDate", event.target.value)}
-            className="w-full rounded-full border border-card-border bg-background/70 px-4 py-3 text-sm text-foreground focus:border-accent focus:outline-none"
+            className="field-input"
           />
         </label>
       </div>

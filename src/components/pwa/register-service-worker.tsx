@@ -8,6 +8,18 @@ export function RegisterServiceWorker() {
       return;
     }
 
+    if (process.env.NODE_ENV !== "production") {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => {
+          registration.unregister().catch(() => {
+            // Ignore unregister failures in development.
+          });
+        });
+      });
+
+      return;
+    }
+
     navigator.serviceWorker.register("/sw.js").catch(() => {
       // Registration failures should not block the app.
     });

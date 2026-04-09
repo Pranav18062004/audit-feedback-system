@@ -4,11 +4,11 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Audit Feedback System",
     short_name: "Audit Feedback",
-    description: "Anonymous store feedback and analytics dashboard.",
+    description: "Authenticated store feedback and analytics dashboard.",
     start_url: "/",
     display: "standalone",
-    background_color: "#f4efe6",
-    theme_color: "#c96838",
+    background_color: "#f4f5f6",
+    theme_color: "#f5333f",
     icons: [
       {
         src: "/icon-192.png",

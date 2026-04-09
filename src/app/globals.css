@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4efe6;
-  --foreground: #1d1a17;
-  --card: rgba(255, 251, 246, 0.88);
-  --card-border: rgba(79, 55, 36, 0.12);
-  --muted: #6d6257;
-  --accent: #c96838;
-  --accent-strong: #a74d22;
-  --accent-soft: rgba(201, 104, 56, 0.14);
-  --surface: #f9f5ef;
-  --shadow: 0 24px 80px rgba(54, 38, 24, 0.14);
-  --ring: rgba(201, 104, 56, 0.35);
+  --background: #f4f5f6;
+  --foreground: #232528;
+  --card: #ffffff;
+  --card-border: #d4d7db;
+  --muted: #666b72;
+  --accent: #f5333f;
+  --accent-strong: #d92631;
+  --accent-soft: #fde7e9;
+  --surface: #eceef0;
+  --shadow: 0 2px 8px rgba(28, 31, 35, 0.08);
+  --ring: rgba(245, 51, 63, 0.28);
 }
 
 @theme inline {
@@ -29,17 +29,17 @@
 }
 
 .dark {
-  --background: #140f0b;
-  --foreground: #f6efe7;
-  --card: rgba(34, 26, 20, 0.86);
-  --card-border: rgba(233, 213, 191, 0.12);
-  --muted: #c1b2a3;
-  --accent: #ef8b57;
-  --accent-strong: #ffb38a;
-  --accent-soft: rgba(239, 139, 87, 0.16);
-  --surface: #1d1611;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
-  --ring: rgba(255, 179, 138, 0.35);
+  --background: #17191b;
+  --foreground: #f3f4f6;
+  --card: #222427;
+  --card-border: #35393e;
+  --muted: #b3b5b8;
+  --accent: #ff4651;
+  --accent-strong: #ff616a;
+  --accent-soft: #2b2123;
+  --surface: #1d1f22;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
+  --ring: rgba(255, 70, 81, 0.32);
 }
 
 * {
@@ -53,12 +53,8 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), sans-serif;
   min-height: 100vh;
-  background-image:
-    radial-gradient(circle at top left, rgba(201, 104, 56, 0.16), transparent 24%),
-    radial-gradient(circle at bottom right, rgba(100, 148, 122, 0.16), transparent 28%),
-    linear-gradient(180deg, var(--surface) 0%, var(--background) 100%);
 }
 
 ::selection {
@@ -75,7 +71,6 @@ select {
     color 180ms ease,
     background-color 180ms ease,
     border-color 180ms ease,
-    transform 180ms ease,
     box-shadow 180ms ease;
 }
 
@@ -84,39 +79,79 @@ select {
   outline-offset: 2px;
 }
 
-.glass-panel {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
-}
-
 .page-shell {
-  width: min(1120px, calc(100vw - 1.5rem));
+  width: min(1240px, calc(100vw - 2rem));
   margin-inline: auto;
 }
 
-.text-balance {
-  text-wrap: balance;
+.panel {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.subtle-panel {
+  background: var(--surface);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+}
+
+.field-input {
+  width: 100%;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--foreground);
+  padding: 10px 12px;
+}
+
+.button-primary {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.button-primary:hover {
+  background: var(--accent-strong);
+}
+
+.button-secondary {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--foreground);
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.button-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .chart-card {
   min-height: 320px;
-}
-
-.swirl-bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(135deg, transparent 0%, rgba(201, 104, 56, 0.08) 42%, transparent 100%),
-    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.2), transparent 24%);
-  opacity: 0.8;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  box-shadow: var(--shadow);
 }
 
 @media (max-width: 640px) {
   .page-shell {
-    width: min(1120px, calc(100vw - 1rem));
+    width: min(1240px, calc(100vw - 1rem));
   }
 }

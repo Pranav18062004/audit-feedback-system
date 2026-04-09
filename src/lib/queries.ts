@@ -1,4 +1,5 @@
 import {
+  type AllowedUser,
   type Question,
   type RawFeedbackRow,
   type Store,
@@ -7,7 +8,7 @@ import {
   type TrendPoint,
 } from "@/lib/supabase/types";
 import {
-  getSupabaseAnonServerClient,
+  getSupabaseServerClient,
   getSupabaseServiceRoleClient,
 } from "@/lib/supabase/server";
 
@@ -58,7 +59,7 @@ function calculateOverallAverage(averages: Record<string, number>, questions: Qu
 }
 
 export async function getActiveStores() {
-  const supabase = getSupabaseAnonServerClient();
+  const supabase = await getSupabaseServerClient();
   const { data, error } = await supabase
     .from("stores")
     .select("id, name, code, region, is_active, created_at")
@@ -72,8 +73,22 @@ export async function getActiveStores() {
   return (data ?? []) as Store[];
 }
 
+export async function getAllStoresForDashboard() {
+  const supabase = getSupabaseServiceRoleClient();
+  const { data, error } = await supabase
+    .from("stores")
+    .select("id, name, code, region, is_active, created_at")
+    .order("name", { ascending: true });
+
+  if (error) {
+    throw new Error(`Failed to load stores: ${error.message}`);
+  }
+
+  return (data ?? []) as Store[];
+}
+
 export async function getStoreById(storeId: string) {
-  const supabase = getSupabaseAnonServerClient();
+  const supabase = await getSupabaseServerClient();
   const { data, error } = await supabase
     .from("stores")
     .select("id, name, code, region, is_active, created_at")
@@ -89,7 +104,7 @@ export async function getStoreById(storeId: string) {
 }
 
 export async function getActiveQuestions() {
-  const supabase = getSupabaseAnonServerClient();
+  const supabase = await getSupabaseServerClient();
   const { data, error } = await supabase
     .from("questions")
     .select("id, slug, title, description, sort_order, is_active, created_at, updated_at")
@@ -318,7 +333,7 @@ export async function getFeedbackExportRows(range: RangeInput, storeId?: string)
   let query = supabase
     .from("feedback")
     .select(
-      "id, store_id, created_at, comments, stores(name, code), feedback_ratings(rating, questions(id, slug, title))",
+      "id, store_id, created_at, comments, submitted_by_email, stores(name, code), feedback_ratings(rating, questions(id, slug, title))",
     )
     .gte("created_at", `${range.startDate}T00:00:00.000Z`)
     .lte("created_at", `${range.endDate}T23:59:59.999Z`)
@@ -335,6 +350,20 @@ export async function getFeedbackExportRows(range: RangeInput, storeId?: string)
   }
 
   return (data ?? []) as unknown as RawFeedbackRow[];
+}
+
+export async function getAllowedUsersForDashboard() {
+  const supabase = getSupabaseServiceRoleClient();
+  const { data, error } = await supabase
+    .from("allowed_users")
+    .select("id, email, role, is_active, created_at, updated_at")
+    .order("email", { ascending: true });
+
+  if (error) {
+    throw new Error(`Failed to load allowed users: ${error.message}`);
+  }
+
+  return (data ?? []) as AllowedUser[];
 }
 
 export async function getAggregateExportRows(range: RangeInput, storeId?: string) {

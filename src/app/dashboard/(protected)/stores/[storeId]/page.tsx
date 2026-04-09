@@ -86,11 +86,11 @@ export default async function StoreDashboardPage({
 
       <LazyStoreDetailCharts questions={analytics.questions} trends={analytics.trends} />
 
-      <section className="rounded-[32px] border border-card-border bg-card p-5">
+      <section className="panel p-5">
         <h3 className="text-lg font-semibold text-foreground">Question summary</h3>
         <p className="mt-1 text-sm text-muted">Weighted averages from daily precomputed metrics.</p>
         <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-[24px] border border-card-border bg-background/70 p-4">
+          <div className="subtle-panel p-4">
             <p className="text-sm text-muted">Overall</p>
             <p className="mt-2 text-2xl font-semibold text-foreground">
               {formatRating(analytics.overallAverage)}
@@ -99,7 +99,7 @@ export default async function StoreDashboardPage({
           {analytics.questions.map((question) => (
             <div
               key={question.id}
-              className="rounded-[24px] border border-card-border bg-background/70 p-4"
+              className="subtle-panel p-4"
             >
               <p className="text-sm text-muted">{question.title}</p>
               <p className="mt-2 text-2xl font-semibold text-foreground">

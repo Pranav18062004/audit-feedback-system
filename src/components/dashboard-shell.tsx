@@ -1,48 +1,56 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 type DashboardShellProps = {
   children: React.ReactNode;
 };
 
 export function DashboardShell({ children }: DashboardShellProps) {
+  const pathname = usePathname();
+
+  const navItems = [
+    { href: "/dashboard", label: "Overview" },
+    { href: "/dashboard/stores", label: "Stores" },
+    { href: "/dashboard/users", label: "Users" },
+    { href: "/dashboard/questions", label: "Questions" },
+  ];
+
   return (
     <div className="space-y-6">
-      <div className="glass-panel rounded-[32px] p-6 sm:p-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-accent">Analytics dashboard</p>
-            <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-              Store performance at a glance
-            </h2>
-            <p className="max-w-2xl text-sm leading-7 text-muted sm:text-base">
-              Aggregates are served from precomputed daily metrics for fast store and network-wide reporting.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/dashboard"
-              className="inline-flex min-h-11 items-center justify-center rounded-full border border-card-border px-4 text-sm font-semibold text-foreground hover:border-accent/60 hover:text-accent"
-            >
-              Global view
-            </Link>
-            <Link
-              href="/dashboard/questions"
-              className="inline-flex min-h-11 items-center justify-center rounded-full border border-card-border px-4 text-sm font-semibold text-foreground hover:border-accent/60 hover:text-accent"
-            >
-              Manage questions
-            </Link>
-            <form action="/api/dashboard/logout" method="post">
-              <button
-                type="submit"
-                className="inline-flex min-h-11 items-center justify-center rounded-full bg-accent px-4 text-sm font-semibold text-white hover:bg-accent-strong"
+      <div className="flex flex-col gap-4 border-b border-card-border pb-4 md:flex-row md:items-center md:justify-between">
+        <div className="space-y-1">
+          <h2 className="text-2xl font-semibold text-foreground">Dashboard</h2>
+          <p className="text-sm text-muted">
+            Store analytics and question management.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {navItems.map((item) => {
+            const active =
+              pathname === item.href ||
+              (item.href !== "/dashboard" && pathname.startsWith(`${item.href}/`));
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "button-secondary",
+                  active && "border-accent bg-accent-soft text-accent",
+                )}
               >
-                Lock dashboard
-              </button>
-            </form>
-          </div>
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
       </div>
-      {children}
+      <div className="space-y-6">
+        {children}
+      </div>
     </div>
   );
 }

@@ -1,19 +1,31 @@
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { PasscodeForm } from "@/components/passcode-form";
+import { requireAdminUser } from "@/lib/access";
+import { hasDashboardSession } from "@/lib/dashboard-auth";
 
-export default function DashboardLoginPage() {
+type DashboardLoginPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function DashboardLoginPage({ searchParams }: DashboardLoginPageProps) {
+  await requireAdminUser("/dashboard");
+  const params = await searchParams;
+  const redirectTo =
+    typeof params.redirectTo === "string" && params.redirectTo.startsWith("/dashboard")
+      ? params.redirectTo
+      : "/dashboard";
+
+  if (await hasDashboardSession()) {
+    redirect(redirectTo);
+  }
+
   return (
     <div className="mx-auto flex w-full max-w-xl flex-1 items-center pb-8">
-      <section className="glass-panel w-full rounded-[36px] p-6 sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.32em] text-accent">
-          Protected analytics
-        </p>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground">
-          Unlock the dashboard
-        </h2>
-        <p className="mt-3 text-sm leading-7 text-muted sm:text-base">
-          Enter the shared passcode to view aggregate metrics and CSV exports. This gate protects
-          analytics without collecting user identities.
+      <section className="panel w-full p-6 sm:p-8">
+        <h2 className="text-2xl font-semibold text-foreground">Dashboard access</h2>
+        <p className="mt-2 text-sm leading-6 text-muted sm:text-base">
+          You are signed in as an admin. Enter the shared passcode to unlock analytics and exports.
         </p>
         <div className="mt-8">
           <Suspense>

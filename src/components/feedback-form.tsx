@@ -65,27 +65,23 @@ export function FeedbackForm({ storeId, storeName, questions }: FeedbackFormProp
 
   if (submitted) {
     return (
-      <div className="glass-panel rounded-[32px] p-6 sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.32em] text-accent">
-          Feedback received
-        </p>
-        <h2 className="mt-3 text-3xl font-semibold text-foreground">Thank you for your input.</h2>
-        <p className="mt-3 max-w-xl text-sm leading-7 text-muted sm:text-base">
-          Your anonymous feedback for {storeName} has been recorded. No personal data was
-          collected.
+      <div className="panel p-6 sm:p-8">
+        <h2 className="text-2xl font-semibold text-foreground">Feedback submitted</h2>
+        <p className="mt-2 max-w-xl text-sm leading-6 text-muted sm:text-base">
+          Your feedback for {storeName} has been recorded with your signed-in email.
         </p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <button
             type="button"
             onClick={() => setSubmitted(false)}
-            className="inline-flex min-h-12 items-center justify-center rounded-full bg-accent px-5 text-sm font-semibold text-white hover:bg-accent-strong"
+            className="button-primary"
           >
             Submit another response
           </button>
           <button
             type="button"
             onClick={() => router.push("/")}
-            className="inline-flex min-h-12 items-center justify-center rounded-full border border-card-border px-5 text-sm font-semibold text-foreground hover:border-accent/60 hover:text-accent"
+            className="button-secondary"
           >
             Choose another store
           </button>
@@ -117,12 +113,12 @@ export function FeedbackForm({ storeId, storeName, questions }: FeedbackFormProp
         />
       ))}
 
-      <div className="rounded-[28px] border border-card-border bg-card p-5">
+      <div className="panel p-5">
         <label htmlFor="comments" className="block text-base font-semibold text-foreground">
           Optional comments
         </label>
         <p className="mt-1 text-sm text-muted">
-          Keep it short. Comments are anonymous and limited to 500 characters.
+          Keep it short. Comments are tied to your signed-in email and limited to 500 characters.
         </p>
         <textarea
           id="comments"
@@ -131,12 +127,12 @@ export function FeedbackForm({ storeId, storeName, questions }: FeedbackFormProp
           value={comments}
           onChange={(event) => setComments(event.target.value)}
           placeholder="Share anything that would help improve the store experience."
-          className="mt-4 w-full rounded-3xl border border-card-border bg-background/80 px-4 py-3 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none"
+          className="field-input mt-4 min-h-28 resize-y placeholder:text-muted"
         />
       </div>
 
       {errorMessage ? (
-        <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-200">
+        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-200">
           {errorMessage}
         </div>
       ) : null}
@@ -144,7 +140,7 @@ export function FeedbackForm({ storeId, storeName, questions }: FeedbackFormProp
       <button
         type="submit"
         disabled={isSubmitting}
-        className="inline-flex min-h-14 w-full items-center justify-center rounded-full bg-accent px-6 text-base font-semibold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-60"
+        className="button-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSubmitting ? "Submitting..." : "Submit feedback"}
       </button>
