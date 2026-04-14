@@ -71,7 +71,7 @@ export function FeedbackLogTable({
                               key={question.id}
                               className="rounded-full border border-card-border bg-surface px-2.5 py-1 text-xs font-medium text-foreground"
                             >
-                              {question.title}: {typeof value === "number" ? value : "-"}
+                              {question.title}: {typeof value === "number" ? value : "N/A"}
                             </span>
                           );
                         })}

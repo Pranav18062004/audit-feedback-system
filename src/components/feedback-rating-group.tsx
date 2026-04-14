@@ -2,8 +2,8 @@ type FeedbackRatingGroupProps = {
   name: string;
   label: string;
   description: string;
-  value?: number;
-  onChange: (value: number) => void;
+  value?: number | null;
+  onChange: (value: number | null) => void;
   error?: string;
 };
 
@@ -15,19 +15,32 @@ export function FeedbackRatingGroup({
   onChange,
   error,
 }: FeedbackRatingGroupProps) {
+  const options = [
+    ...Array.from({ length: 10 }, (_, index) => ({
+      key: String(index + 1),
+      label: String(index + 1),
+      value: index + 1,
+    })),
+    {
+      key: "na",
+      label: "N/A",
+      value: null,
+    },
+  ];
+
   return (
     <fieldset className="panel space-y-4 p-5">
       <div className="space-y-1">
         <legend className="text-base font-semibold text-foreground">{label}</legend>
         <p className="text-sm text-muted">{description}</p>
       </div>
-      <div className="grid grid-cols-5 gap-2 sm:grid-cols-10 sm:gap-3">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((score) => {
-          const selected = value === score;
+      <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-11 sm:gap-3">
+        {options.map((option) => {
+          const selected = value === option.value;
 
           return (
             <label
-              key={score}
+              key={option.key}
               className={`flex min-h-11 cursor-pointer items-center justify-center rounded-md border text-sm font-medium ${
                 selected
                   ? "border-accent bg-accent text-white"
@@ -37,12 +50,12 @@ export function FeedbackRatingGroup({
               <input
                 type="radio"
                 name={name}
-                value={score}
+                value={option.value ?? "na"}
                 checked={selected}
-                onChange={() => onChange(score)}
+                onChange={() => onChange(option.value)}
                 className="sr-only"
               />
-              {score}
+              {option.label}
             </label>
           );
         })}

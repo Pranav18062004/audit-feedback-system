@@ -15,12 +15,15 @@ export function FeedbackForm({ storeId, storeName, questions }: FeedbackFormProp
   const router = useRouter();
   const [submitted, setSubmitted] = useState(false);
   const [comments, setComments] = useState("");
-  const [ratings, setRatings] = useState<Record<string, number>>({});
+  const [ratings, setRatings] = useState<Record<string, number | null>>({});
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const missingQuestionIds = useMemo(
-    () => questions.filter((question) => !ratings[question.id]).map((question) => question.id),
+    () =>
+      questions
+        .filter((question) => !(question.id in ratings))
+        .map((question) => question.id),
     [questions, ratings],
   );
 
@@ -29,7 +32,7 @@ export function FeedbackForm({ storeId, storeName, questions }: FeedbackFormProp
     setErrorMessage(null);
 
     if (missingQuestionIds.length > 0) {
-      setErrorMessage("Please answer every rating question before submitting.");
+      setErrorMessage("Please choose a score or N/A for every question before submitting.");
       return;
     }
 
@@ -68,7 +71,7 @@ export function FeedbackForm({ storeId, storeName, questions }: FeedbackFormProp
       <div className="panel p-6 sm:p-8">
         <h2 className="text-2xl font-semibold text-foreground">Feedback submitted</h2>
         <p className="mt-2 max-w-xl text-sm leading-6 text-muted sm:text-base">
-          Your feedback for {storeName} has been recorded with your signed-in email.
+          Your feedback for {storeName} has been recorded with your signed-in name and email.
         </p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <button
@@ -97,7 +100,7 @@ export function FeedbackForm({ storeId, storeName, questions }: FeedbackFormProp
           key={question.id}
           name={question.slug}
           label={question.title}
-          description={question.description ?? "Rate this item from 1 to 10."}
+          description={question.description ?? "Rate this item from 1 to 10, or choose N/A."}
           value={ratings[question.id]}
           onChange={(value) =>
             setRatings((current) => ({
@@ -107,7 +110,7 @@ export function FeedbackForm({ storeId, storeName, questions }: FeedbackFormProp
           }
           error={
             errorMessage && missingQuestionIds.includes(question.id)
-              ? "Please choose a rating."
+              ? "Please choose a rating or N/A."
               : undefined
           }
         />
@@ -118,7 +121,7 @@ export function FeedbackForm({ storeId, storeName, questions }: FeedbackFormProp
           Optional comments
         </label>
         <p className="mt-1 text-sm text-muted">
-          Keep it short. Comments are tied to your signed-in email and limited to 500 characters.
+          Keep it short. Comments are tied to your signed-in name and email and limited to 500 characters.
         </p>
         <textarea
           id="comments"

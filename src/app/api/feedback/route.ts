@@ -7,7 +7,7 @@ type FeedbackRequest = {
   comments?: string | null;
   ratings?: Array<{
     questionId?: string;
-    rating?: number;
+    rating?: number | null;
   }>;
 };
 

@@ -54,7 +54,7 @@ export type RawFeedbackRow = {
   submitted_by_name: string;
   submitted_by_email: string;
   feedback_ratings: Array<{
-    rating: number;
+    rating: number | null;
     questions: Pick<Question, "id" | "slug" | "title"> | null;
   }> | null;
   stores: Pick<Store, "name" | "code"> | null;
@@ -83,6 +83,6 @@ export type FeedbackSubmission = {
   comments?: string;
   ratings: Array<{
     questionId: string;
-    rating: number;
+    rating: number | null;
   }>;
 };

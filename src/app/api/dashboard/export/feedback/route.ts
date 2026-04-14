@@ -38,7 +38,7 @@ export async function GET(request: Request) {
 
     for (const rating of row.feedback_ratings ?? []) {
       if (rating.questions?.slug) {
-        base[`rating_${rating.questions.slug}`] = rating.rating;
+        base[`rating_${rating.questions.slug}`] = rating.rating ?? "N/A";
       }
     }
 

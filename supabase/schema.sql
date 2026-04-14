@@ -80,10 +80,20 @@ create table if not exists public.feedback_ratings (
   id uuid primary key default gen_random_uuid(),
   feedback_id uuid not null references public.feedback(id) on delete cascade,
   question_id uuid not null references public.questions(id) on delete restrict,
-  rating integer not null check (rating between 1 and 10),
+  rating integer,
   created_at timestamptz not null default timezone('utc', now()),
   unique (feedback_id, question_id)
 );
+
+alter table public.feedback_ratings
+alter column rating drop not null;
+
+alter table public.feedback_ratings
+drop constraint if exists feedback_ratings_rating_check;
+
+alter table public.feedback_ratings
+add constraint feedback_ratings_rating_check
+check (rating is null or rating between 1 and 10);
 
 create index if not exists feedback_ratings_feedback_id_idx on public.feedback_ratings (feedback_id);
 create index if not exists feedback_ratings_question_id_idx on public.feedback_ratings (question_id);
@@ -269,7 +279,7 @@ begin
   from public.questions
   where is_active = true;
 
-  select count(*)
+  select count(distinct (value ->> 'question_id')::uuid)
   into v_submitted_question_count
   from jsonb_array_elements(p_ratings);
 
@@ -301,10 +311,10 @@ begin
     select value from jsonb_array_elements(p_ratings)
   loop
     v_question_id := (v_rating ->> 'question_id')::uuid;
-    v_score := (v_rating ->> 'rating')::integer;
+    v_score := nullif(v_rating ->> 'rating', '')::integer;
 
-    if v_score < 1 or v_score > 10 then
-      raise exception 'Ratings must be between 1 and 10.';
+    if v_question_id is null then
+      raise exception 'Each rating must include a valid question.';
     end if;
 
     if not exists (
@@ -314,6 +324,14 @@ begin
         and is_active = true
     ) then
       raise exception 'Question is invalid or inactive.';
+    end if;
+
+    if v_score is null then
+      continue;
+    end if;
+
+    if v_score < 1 or v_score > 10 then
+      raise exception 'Ratings must be between 1 and 10, or N/A.';
     end if;
 
     insert into public.feedback_ratings (feedback_id, question_id, rating, created_at)
@@ -446,6 +464,6 @@ using (false);
 comment on table public.allowed_users is 'Application access list managed by admins. Only active email addresses can use the app.';
 comment on table public.user_profiles is 'First-time profile names collected from signed-in users and reused for future submissions.';
 comment on table public.feedback is 'Authenticated audit feedback with the submitter name and verified email recorded for traceability.';
-comment on table public.questions is 'Manager-configurable 1-10 rating questions used by the feedback form.';
+comment on table public.questions is 'Manager-configurable 1-10 rating questions used by the feedback form, with N/A available per submission.';
 
 grant execute on function public.submit_feedback(text, text, uuid, text, jsonb) to authenticated;

@@ -48,7 +48,7 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
       <section className="space-y-4">
         <SectionHeading
           title="Feedback form"
-          description="Rate each question from 1 to 10 and optionally add a comment. Your signed-in email will be attached to this feedback."
+        description="Rate each question from 1 to 10, or choose N/A when it does not apply. Your signed-in name and email will be attached to this feedback."
         />
         <FeedbackForm storeId={store.id} storeName={store.name} questions={questions} />
       </section>
